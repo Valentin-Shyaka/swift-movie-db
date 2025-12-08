@@ -13,13 +13,11 @@ class MovieStore: MovieService {
     static let shared = MovieStore()
     private init() {}
     
-    private let apiKey = "APIKEY"
-    private let baseAPIURL = "https://api.themoviedb.org/3"
     private let urlSession = URLSession.shared
     private let jsonDecoder = Utils.jsonDecoder
     
     func fetchMovies(from endpoint: MovieListEndpoint, completion: @escaping (Result<MovieResponse, MovieError>) -> ()) {
-        guard let url = URL(string: "\(baseAPIURL)/movie/\(endpoint.rawValue)") else {
+        guard let url = URL(string: "\(Constants.baseURL)/movie/\(endpoint.rawValue)") else {
             completion(.failure(.invalidEndpoint))
             return
         }
@@ -27,25 +25,25 @@ class MovieStore: MovieService {
     }
     
     func fetchMovie(id: Int, completion: @escaping (Result<Movie, MovieError>) -> ()) {
-        guard let url = URL(string: "\(baseAPIURL)/movie/\(id)") else {
+        guard let url = URL(string: "\(Constants.baseURL)/movie/\(id)") else {
             completion(.failure(.invalidEndpoint))
             return
         }
         self.loadURLAndDecode(url: url, params: [
-            "append_to_response": "videos,credits"
+            Constants.Params.appendToResponse: Constants.Params.appendToResponseValues
         ], completion: completion)
     }
     
     func searchMovie(query: String, completion: @escaping (Result<MovieResponse, MovieError>) -> ()) {
-        guard let url = URL(string: "\(baseAPIURL)/search/movie") else {
+        guard let url = URL(string: "\(Constants.baseURL)/\(Constants.Endpoints.search)") else {
             completion(.failure(.invalidEndpoint))
             return
         }
         self.loadURLAndDecode(url: url, params: [
-            "language": "en-US",
-            "include_adult": "false",
-            "region": "US",
-            "query": query
+            Constants.Params.language: Constants.Params.languageValue,
+            Constants.Params.includeAdult: "false",
+            Constants.Params.region: Constants.Params.regionValue,
+            Constants.Params.query: query
         ], completion: completion)
     }
     
@@ -55,7 +53,7 @@ class MovieStore: MovieService {
             return
         }
         
-        var queryItems = [URLQueryItem(name: "api_key", value: apiKey)]
+        var queryItems = [URLQueryItem(name: "api_key", value: Constants.apiKey)]
         if let params = params {
             queryItems.append(contentsOf: params.map { URLQueryItem(name: $0.key, value: $0.value) })
         }

@@ -51,11 +51,11 @@ struct Movie: Decodable, Identifiable, Hashable {
     }()
     
     var backdropURL: URL {
-        return URL(string: "https://image.tmdb.org/t/p/w500\(backdropPath ?? "")")!
+        return URL(string: "\(Constants.imageBaseURL)\(backdropPath ?? "")")!
     }
     
     var posterURL: URL {
-        return URL(string: "https://image.tmdb.org/t/p/w500\(posterPath ?? "")")!
+        return URL(string: "\(Constants.imageBaseURL)\(posterPath ?? "")")!
     }
     
     var genreText: String {
@@ -156,6 +156,6 @@ struct MovieVideo: Decodable, Identifiable {
         guard site == "YouTube" else {
             return nil
         }
-        return URL(string: "https://youtube.com/watch?v=\(key)")
+        return URL(string: "\(Constants.youtubeBaseURL)\(key)")
     }
 }
